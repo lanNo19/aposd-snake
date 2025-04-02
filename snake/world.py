@@ -100,3 +100,16 @@ class World:
             next_x = random.randint(1, 30)
             next_y = random.randint(1, 30)
             self.apple = Position(next_x, next_y)
+        return self
+
+    def listen_to_keys(self, new_direction):
+        """Updates snake direction while preventing reverse movement."""
+        opposite = {
+            Direction.Up: Direction.Down,
+            Direction.Down: Direction.Up,
+            Direction.Left: Direction.Right,
+            Direction.Right: Direction.Left
+        }
+
+        if new_direction != opposite.get(self.direction, None):
+            self.direction = new_direction
