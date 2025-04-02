@@ -6,7 +6,7 @@ from snake.clock import Clock
 
 class IDialogue(ABC, Clock, Turtle):
     @abstractmethod
-    def mount(self):
+    def mount(self, switch_dialogue_callback):
         pass
 
     @abstractmethod
@@ -21,4 +21,3 @@ class IDialogue(ABC, Clock, Turtle):
         super().__init__()
         self.turtle = turtle
         self.clock = clock
-        self.mount()

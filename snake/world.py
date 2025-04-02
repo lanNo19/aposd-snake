@@ -51,9 +51,9 @@ class World:
     score: int
 
     @ensure(lambda tail: not tail)
-    @ensure(lambda head: head.x is 15 and head.y is 15)
-    @ensure(lambda score: score is 0)
-    @ensure(lambda direction: direction is Direction.East)
+    @ensure(lambda head: head.x == 15 and head.y == 15)
+    @ensure(lambda score: score == 0)
+    @ensure(lambda direction: direction == Direction.East)
     def __init__(self) -> None:
         self.width = PositiveInt(32)
         self.height = PositiveInt(32)

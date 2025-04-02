@@ -1,5 +1,5 @@
 import time
 
 class Clock:
-    def now(self):
+    def now():
         return time.perf_counter()

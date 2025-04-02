@@ -16,10 +16,10 @@ class GameDialogue(IDialogue):
         self.key_handler()
 
     def unmount(self):
-        self.turtle_obj.screen.onkeypress(None, "Up")
-        self.turtle_obj.screen.onkeypress(None, "Down")
-        self.turtle_obj.screen.onkeypress(None, "Left")
-        self.turtle_obj.screen.onkeypress(None, "Right")
+        self.turtle.screen.onkeypress(None, "Up")
+        self.turtle.screen.onkeypress(None, "Down")
+        self.turtle.screen.onkeypress(None, "Left")
+        self.turtle.screen.onkeypress(None, "Right")
 
     def refresh(self):
 
