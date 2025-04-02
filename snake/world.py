@@ -2,6 +2,7 @@
 
 import dataclasses
 import enum
+import random
 from typing import List, Optional, Final, Sequence, cast
 
 from icontract import ensure, require
@@ -16,6 +17,11 @@ class Position:
     """
     x: int
     y: int
+
+    def check_fence(self) -> bool:
+        if self.x == 0 or self.y == 0 or self.x == 31 or self.y == 31:
+            return True
+        return False
 
 class Direction(enum.Enum):
     """
@@ -56,3 +62,41 @@ class World:
         self.score = 0
         self.direction = Direction.East
 
+    def update_world(self) -> World:
+        next_x: int
+        next_y: int
+        match self.direction:
+            case Direction.North:
+                next_x = self.head.x
+                next_y = self.head.y - 1
+            case Direction.South:
+                next_x = self.head.x
+                next_y = self.head.y + 1
+            case Direction.East:
+                next_x = self.head.x + 1
+                next_y = self.head.y
+            case Direction.West:
+                next_x = self.head.x - 1
+                next_y = self.head.y
+
+        next_head_position = Position(next_x, next_y)
+        if (next_head_position.check_fence() or next_head_position in self.tail):
+            game_over()
+            return
+
+        if (next_head_position == self.apple):
+            self.tail.append(self.head)
+            self.head = next_head_position
+            self.score += 10
+        else:
+            if self.tail:
+                self.tail[:-1] = self.tail[1:]
+                self.tail[-1] = next_head_position
+
+        """
+        for apple
+        """
+        while (self.apple == self.head or self.apple.check_fence() or self.apple in self.tail):
+            next_x = random.randint(1, 30)
+            next_y = random.randint(1, 30)
+            self.apple = Position(next_x, next_y)
