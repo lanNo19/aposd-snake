@@ -63,6 +63,11 @@ class World:
         self.direction = Direction.East
         self.game_over_callback = game_over_callback
 
+    @ensure(lambda self: self.head not in self.tail, "Head must not be in the tail after update.")
+    @ensure(lambda self: not self.head.check_fence(), "Head must not be on the fence after update.")
+    @ensure(lambda self: self.apple is None or not self.apple.check_fence(), "Apple must not be placed on the fence.")
+    @ensure(lambda self: self.apple is None or self.apple not in self.tail,
+            "Apple must not be inside the snake's body.")
     def update_world(self) -> World:
         next_x: int
         next_y: int
@@ -85,7 +90,7 @@ class World:
             self.game_over()
             return self
 
-        if (next_head_position == self.apple):
+        if next_head_position == self.apple:
             self.tail.append(self.head)
             self.head = next_head_position
             self.score += 10
@@ -102,8 +107,18 @@ class World:
 
         return self
 
+    @ensure(lambda self, new_direction:
+            new_direction != {
+                Direction.Up: Direction.Down,
+                Direction.Down: Direction.Up,
+                Direction.Left: Direction.Right,
+                Direction.Right: Direction.Left
+            }.get(self.direction, None),
+            "The new direction must not be the opposite of the current direction.")
     def listen_to_keys(self, new_direction):
-        """Updates snake direction while preventing reverse movement."""
+        """
+        Updates snake direction while preventing reverse movement.
+        """
         opposite = {
             Direction.Up: Direction.Down,
             Direction.Down: Direction.Up,
@@ -114,6 +129,8 @@ class World:
         if new_direction != opposite.get(self.direction, None):
             self.direction = new_direction
 
-    def game_over(self):
-        if self.game_over_callback:
-            self.game_over_callback(self)
+    def game_over(self) -> None:
+        """
+        use callback function to switch to next state of the program.
+        """
+        self.game_to_gameover_callback()
