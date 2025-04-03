@@ -54,13 +54,14 @@ class World:
     @ensure(lambda head: head.x == 15 and head.y == 15)
     @ensure(lambda score: score == 0)
     @ensure(lambda direction: direction == Direction.East)
-    def __init__(self) -> None:
+    def __init__(self, game_over_callback) -> None:
         self.width = PositiveInt(32)
         self.height = PositiveInt(32)
         self.head = Position(15, 15)
         self.tail: List[Position] = []
         self.score = 0
         self.direction = Direction.East
+        self.game_over_callback = game_over_callback
 
     def update_world(self) -> World:
         next_x: int
@@ -80,9 +81,9 @@ class World:
                 next_y = self.head.y
 
         next_head_position = Position(next_x, next_y)
-        if (next_head_position.check_fence() or next_head_position in self.tail):
-            game_over()
-            return
+        if next_head_position.check_fence() or next_head_position in self.tail:
+            self.game_over()
+            return self
 
         if (next_head_position == self.apple):
             self.tail.append(self.head)
@@ -93,13 +94,12 @@ class World:
                 self.tail[:-1] = self.tail[1:]
                 self.tail[-1] = next_head_position
 
-        """
-        for apple
-        """
-        while (self.apple == self.head or self.apple.check_fence() or self.apple in self.tail):
+        # for apple
+        while self.apple == self.head or self.apple.check_fence() or self.apple in self.tail:
             next_x = random.randint(1, 30)
             next_y = random.randint(1, 30)
             self.apple = Position(next_x, next_y)
+
         return self
 
     def listen_to_keys(self, new_direction):
@@ -113,3 +113,7 @@ class World:
 
         if new_direction != opposite.get(self.direction, None):
             self.direction = new_direction
+
+    def game_over(self):
+        if self.game_over_callback:
+            self.game_over_callback(self)
