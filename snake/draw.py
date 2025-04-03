@@ -57,9 +57,9 @@ class Draw:
     def draw(self, world:World) -> None:
         self.screen.clear()
         self.draw_fence()
-        self.draw_apple(world.apple)
-        for seg in world.tail:
+        self.draw_apple(world._apple)
+        for seg in world._tail:
             self.draw_block(seg.x, seg.y, "dark_green")
-        self.draw_block(world.head.x, world.head.y, "green")
+        self.draw_block(world._head.x, world._head.y, "green")
         self.draw_score(world.score)
         self.screen.update()
